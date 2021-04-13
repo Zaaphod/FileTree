@@ -8,8 +8,8 @@
       <Unit0>
         <Filename Value="FileTree.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="ufFileTree.pas"/>
@@ -17,9 +17,12 @@
         <ComponentName Value="fFileTree"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <UsageCount Value="21"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="18"/>
+        <CursorPos X="29" Y="53"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="ufFileVirtualTree.pas"/>
@@ -27,9 +30,10 @@
         <ComponentName Value="fFileVirtualTree"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <CursorPos Y="7"/>
-        <UsageCount Value="21"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="113"/>
+        <CursorPos X="29" Y="151"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit2>
     </Units>

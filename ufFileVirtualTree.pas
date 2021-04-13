@@ -123,6 +123,18 @@ end;
 procedure TTreeData.SetValue( _Value: String);
 begin
      FValue:= _Value;
+     If Length(FValue) = 1 Then
+         FValue:='0'+FValue;
+     If Length(FValue) = 2 Then
+         FValue:=':'+FValue;
+     If Length(FValue) = 3 Then
+         FValue:='0'+FValue;
+     If Length(FValue) = 4 Then
+         FValue:='0'+FValue;
+     If Length(FValue) = 5 Then
+         FValue:=':'+FValue;
+     If Length(FValue) = 6 Then
+         FValue:='0'+FValue;
 
      if not TryStrToDateTime( FValue, FdValue)
      then
@@ -130,10 +142,23 @@ begin
 end;
 
 procedure TTreeData.SetdValue( _dValue: TDateTime);
+Var
+   I : Integer;
+   TempValue : String;
+   NonZero : Boolean;
 begin
      FdValue:= _dValue;
-
-     FValue:= FormatDateTime( 'hh:nn', FdValue);
+     TempValue:= FormatDateTime( 'hh:nn:ss', FdValue);
+     NonZero := False;
+     FValue := '';
+     For I:= 1 to Length(TempValue) do
+         Begin
+            If NonZero Or (I = Length(TempValue)-3) OR ((TempValue[I] >= '1') And (TempValue[I] <= '9')) Then
+              Begin
+                 NonZero := True;
+                 FValue := FValue + TempValue[I]
+              End;
+         end;
 end;
 
 
@@ -148,7 +173,8 @@ procedure TfFileVirtualTree.FormCreate(Sender: TObject);
         try
            ini.ReadSectionRaw( 'Files', slFiles);
         finally
-               FreeAndNil( ini);
+              slfiles.sort;
+              FreeAndNil( ini);
                end;
    end;
    procedure tv_from_slFiles;

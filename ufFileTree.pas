@@ -50,6 +50,7 @@ procedure TfFileTree.FormCreate(Sender: TObject);
         try
            ini.ReadSectionRaw( 'Files', slFiles);
         finally
+               slFiles.Sort;
                FreeAndNil( ini);
                end;
    end;
