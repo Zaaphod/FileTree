@@ -16,6 +16,7 @@ type
  =
   class(TForm)
    bGetSelection: TButton;
+   l: TLabel;
    m: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -24,9 +25,6 @@ type
     procedure bGetSelectionClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure Panel1Click(Sender: TObject);
-    procedure Panel2Click(Sender: TObject);
-    procedure tvClick(Sender: TObject);
   private
     slFiles: TStringList;
     procedure tv_addnode_from_key_value( _Key, _Value: String);
@@ -80,21 +78,6 @@ begin
      FreeAndNil( slFiles);
 end;
 
-procedure TfFileTree.Panel1Click(Sender: TObject);
-begin
-
-end;
-
-procedure TfFileTree.Panel2Click(Sender: TObject);
-begin
-
-end;
-
-procedure TfFileTree.tvClick(Sender: TObject);
-begin
-
-end;
-
 //duplicated for convenience from uuStrings.pas
 function StrToK( Key: String; var S: String): String;
 var
@@ -127,7 +110,7 @@ var
         s:= StrTok( Separator, sTreePath);
         if sTreePath = ''
         then             //terminal case for recursion, add Value
-            s:= s + ' = ' + _Value;
+            s:= s + ' ' + _Value;
 
         if nil = Parent
         then

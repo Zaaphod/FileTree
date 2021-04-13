@@ -9,7 +9,7 @@ object fFileTree: TfFileTree
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '2.0.4.0'
+  LCLVersion = '2.0.12.0'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -19,7 +19,6 @@ object fFileTree: TfFileTree
     ClientHeight = 50
     ClientWidth = 518
     TabOrder = 0
-    OnClick = Panel1Click
     object bGetSelection: TButton
       Left = 15
       Height = 25
@@ -28,6 +27,14 @@ object fFileTree: TfFileTree
       Caption = 'Get Selection'
       OnClick = bGetSelectionClick
       TabOrder = 0
+    end
+    object l: TLabel
+      Left = 180
+      Height = 19
+      Top = 21
+      Width = 4
+      Caption = 'l'
+      ParentColor = False
     end
   end
   object Panel2: TPanel
@@ -39,7 +46,6 @@ object fFileTree: TfFileTree
     ClientHeight = 190
     ClientWidth = 518
     TabOrder = 1
-    OnClick = Panel2Click
     object tv: TTreeView
       Left = 1
       Height = 188
@@ -47,12 +53,8 @@ object fFileTree: TfFileTree
       Width = 361
       Align = alClient
       MultiSelect = True
-      MultiSelectStyle = [msControlSelect, msShiftSelect, msVisibleOnly, msSiblingOnly]
-      ReadOnly = True
-      RightClickSelect = True
-      SelectionColor = clYellow
       TabOrder = 0
-      Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object m: TMemo
       Left = 367
