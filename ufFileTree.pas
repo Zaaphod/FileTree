@@ -27,8 +27,8 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     slFiles: TStringList;
-    procedure tv_addnode_from_key_value( _Key, _Value: String);
   public
+    procedure tv_addnode_from_key_value( _Key, _Value: String);
     function Get_Selected: String;
   end;
 

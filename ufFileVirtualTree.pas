@@ -45,8 +45,10 @@ type
    bfFileTree: TButton;
    bLoad_from_File: TButton;
    bOD: TButton;
+   Edit1: TEdit;
    eFileName: TEdit;
    Label1: TLabel;
+   Label2: TLabel;
    lCompute_Aggregates: TLabel;
    m: TMemo;
    od: TOpenDialog;
@@ -60,8 +62,10 @@ type
     procedure bGetSelectionClick(Sender: TObject);
     procedure bLoad_from_FileClick(Sender: TObject);
     procedure bODClick(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure mChange(Sender: TObject);
     procedure vstChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
      Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
@@ -129,8 +133,7 @@ begin
 end;
 
 { TTreeData }
-
-procedure TTreeData.SetValue( _Value: String);
+function Fix_Time( FixTime_Value: String): String;
    function Colon_count( _Value: String): Integer;
    begin
         Result:= 0;
@@ -141,19 +144,21 @@ procedure TTreeData.SetValue( _Value: String);
           Inc(Result);
           end;
    end;
+begin
+  case Colon_count( FixTime_Value)
+  of
+    0: Fix_Time:= '0:0:'+FixTime_Value;
+    1: Fix_Time:= '0:'  +FixTime_Value;
+    2: Fix_Time:=        FixTime_Value;
+    end;
+end;
+
+procedure TTreeData.SetValue( _Value: String);
    procedure FdValue_from_FValue;
-   var
-      s: String;
-   begin
-        case Colon_count( FValue)
-        of
-          0: s:= '0:0:'+FValue;
-          1: s:= '0:'  +FValue;
-          2: s:=        FValue;
-          end;
-        if not TryStrToDateTime( s, FdValue)
-        then
-            FdValue:= 0;
+   Begin
+      if not TryStrToDateTime( Fix_Time(FValue), FdValue)
+      then
+         FdValue:= 0;
    end;
 begin
      FValue:= _Value;
@@ -191,6 +196,11 @@ begin
      FreeAndNil( slTreeData);//todo: TTreeData not freed( may be freed by vst ?)
 end;
 
+procedure TfFileVirtualTree.mChange(Sender: TObject);
+begin
+
+end;
+
 function TfFileVirtualTree.NewTreeData( _Text, _Key, _Value: String; _IsLeaf: Boolean): TTreeData;
 begin
      Result:= TTreeData.Create;
@@ -212,6 +222,11 @@ begin
      if od.Execute
      then
          eFileName.Text:= od.FileName;
+end;
+
+procedure TfFileVirtualTree.Edit1Change(Sender: TObject);
+begin
+
 end;
 
 procedure TfFileVirtualTree.Load_from_File( _FileName: String);
@@ -249,10 +264,14 @@ procedure TfFileVirtualTree.Load_from_File( _FileName: String);
         lCompute_Aggregates.Hide;
    end;
 begin
+     vst.Clear; 
      slFiles:= TStringList.Create;
+     slFiles.Clear;
      slFiles_from_ini_file;
      slNodes:= TStringList.Create;
+     slNodes.Clear;
      slTreeData:= TStringList.Create;
+     slTreeData.Clear;
      tv_from_slFiles;
 end;
 
@@ -451,8 +470,14 @@ function TfFileVirtualTree.Get_Checked: String;
 var
    vn: PVirtualNode;
    td: TTreeData;
+   Total_Run_Time : Double;
    Total_Time : Double;
+   Load_Time : Double;
 begin
+     if not TryStrToDateTime( Fix_Time(Edit1.Text), Load_Time)
+        then
+            Load_Time:= 0;
+     Total_Run_Time:=0;
      Total_Time:=0;
      Result:= '';
      vn:= vst.GetFirstChecked;
@@ -463,13 +488,14 @@ begin
        if td.IsLeaf
        then
            Begin
-           Formate_Liste( Result, #13#10, td.Key+' '+td.Value);
-              Total_Time:=Total_Time+td.dValue
+              Formate_Liste( Result, #13#10, td.Key+' '+td.Value);
+              Total_Run_Time:=Total_Run_Time+td.dValue;
+              Total_Time:=Total_Time+td.dValue+Load_Time;
            end;
        vn:= vst.GetNextChecked( vn);
        end;
-    Formate_Liste( Result, #13#10#13#10, 'Total Time Needed: '+FormatDateTime( 'h:n:ss', Total_Time));
-    Result:='Total Time Needed: '+FormatDateTime( 'h:n:ss', Total_Time)+#13#10#13#10+Result;
+    Formate_Liste( Result, #13#10#13#10, 'Total Run Time: '+FormatDateTime( 'h:n:ss', Total_Run_Time));
+    Result:='Total Time Including Loading: '+FormatDateTime( 'h:n:ss', Total_Time)+#13#10#13#10+Result;
 end;
 
 procedure TfFileVirtualTree.bGetSelectionClick(Sender: TObject);
