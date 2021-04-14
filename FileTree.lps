@@ -8,7 +8,7 @@
       <Unit0>
         <Filename Value="FileTree.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -17,11 +17,10 @@
         <ComponentName Value="fFileTree"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="18"/>
         <CursorPos X="29" Y="53"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -30,14 +29,57 @@
         <ComponentName Value="fFileVirtualTree"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="113"/>
-        <CursorPos X="29" Y="151"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="440"/>
+        <CursorPos X="79" Y="472"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit2>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="10" HistoryIndex="9">
+      <Position1>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="226" Column="29" TopLine="235"/>
+      </Position1>
+      <Position2>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="475" Column="39" TopLine="434"/>
+      </Position2>
+      <Position3>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="84" Column="25" TopLine="60"/>
+      </Position3>
+      <Position4>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="466" Column="36" TopLine="435"/>
+      </Position4>
+      <Position5>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="470" Column="45" TopLine="436"/>
+      </Position5>
+      <Position6>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="27" Column="23" TopLine="2"/>
+      </Position6>
+      <Position7>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="29" Column="44" TopLine="2"/>
+      </Position7>
+      <Position8>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="32" Column="31" TopLine="2"/>
+      </Position8>
+      <Position9>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="470" Column="94" TopLine="439"/>
+      </Position9>
+      <Position10>
+        <Filename Value="ufFileVirtualTree.pas"/>
+        <Caret Line="456" Column="20" TopLine="439"/>
+      </Position10>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode=""/>

@@ -43,14 +43,23 @@ type
    bGetChecked: TButton;
    bGetSelection: TButton;
    bfFileTree: TButton;
+   bLoad_from_File: TButton;
+   bOD: TButton;
+   eFileName: TEdit;
+   Label1: TLabel;
+   lCompute_Aggregates: TLabel;
    m: TMemo;
+   od: TOpenDialog;
     Panel1: TPanel;
     Panel2: TPanel;
+    pb: TProgressBar;
     Splitter1: TSplitter;
     vst: TVirtualStringTree;
     procedure bfFileTreeClick(Sender: TObject);
     procedure bGetCheckedClick(Sender: TObject);
     procedure bGetSelectionClick(Sender: TObject);
+    procedure bLoad_from_FileClick(Sender: TObject);
+    procedure bODClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure vstChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -73,6 +82,7 @@ type
   public
     function Get_Selected: String;
     function Get_Checked: String;
+    procedure Load_from_File( _FileName: String);
   end;
 
 var
@@ -121,83 +131,57 @@ end;
 { TTreeData }
 
 procedure TTreeData.SetValue( _Value: String);
+   function Colon_count( _Value: String): Integer;
+   begin
+        Result:= 0;
+        while Pos(':',_Value) > 0
+        do
+          begin
+          StrToK( ':',_Value);
+          Inc(Result);
+          end;
+   end;
+   procedure FdValue_from_FValue;
+   var
+      s: String;
+   begin
+        case Colon_count( FValue)
+        of
+          0: s:= '0:0:'+FValue;
+          1: s:= '0:'  +FValue;
+          2: s:=        FValue;
+          end;
+        if not TryStrToDateTime( s, FdValue)
+        then
+            FdValue:= 0;
+   end;
 begin
      FValue:= _Value;
-     If Length(FValue) = 1 Then
-         FValue:='0'+FValue;
-     If Length(FValue) = 2 Then
-         FValue:=':'+FValue;
-     If Length(FValue) = 3 Then
-         FValue:='0'+FValue;
-     If Length(FValue) = 4 Then
-         FValue:='0'+FValue;
-     If Length(FValue) = 5 Then
-         FValue:=':'+FValue;
-     If Length(FValue) = 6 Then
-         FValue:='0'+FValue;
 
-     if not TryStrToDateTime( FValue, FdValue)
-     then
-         FdValue:= 0;
+     FdValue_from_FValue;
 end;
 
 procedure TTreeData.SetdValue( _dValue: TDateTime);
-Var
-   I : Integer;
-   TempValue : String;
-   NonZero : Boolean;
+   procedure Strip_leading_zeroes;
+   const
+        s='0:';
+   begin
+        while 1=Pos(s, FValue)
+        do
+          Delete( FValue, 1, Length(s));
+   end;
 begin
      FdValue:= _dValue;
-     TempValue:= FormatDateTime( 'hh:nn:ss', FdValue);
-     NonZero := False;
-     FValue := '';
-     For I:= 1 to Length(TempValue) do
-         Begin
-            If NonZero Or (I = Length(TempValue)-3) OR ((TempValue[I] >= '1') And (TempValue[I] <= '9')) Then
-              Begin
-                 NonZero := True;
-                 FValue := FValue + TempValue[I]
-              End;
-         end;
+
+     FValue:= FormatDateTime( 'h:n:ss', FdValue);
+     Strip_leading_zeroes;
 end;
 
 
 { TfFileVirtualTree }
 
 procedure TfFileVirtualTree.FormCreate(Sender: TObject);
-   procedure slFiles_from_ini_file;
-   var
-      ini: TINIFile;
-   begin
-        ini:= TINIFile.Create( 'FileTree.ini');
-        try
-           ini.ReadSectionRaw( 'Files', slFiles);
-        finally
-              slfiles.sort;
-              FreeAndNil( ini);
-               end;
-   end;
-   procedure tv_from_slFiles;
-   var
-      i: Integer;
-      Key, Value: String;
-   begin
-        for i:= 0 to slFiles.Count-1
-        do
-          begin
-          Key  := slFiles.Names         [ i];
-          Value:= slFiles.ValueFromIndex[ i];
-
-          vst_addnode_from_key_value( Key, Value);
-          end;
-        Compute_Aggregates;
-   end;
 begin
-     slFiles:= TStringList.Create;
-     slFiles_from_ini_file;
-     slNodes:= TStringList.Create;
-     slTreeData:= TStringList.Create;
-     tv_from_slFiles;
 end;
 
 procedure TfFileVirtualTree.FormDestroy(Sender: TObject);
@@ -215,6 +199,61 @@ begin
      Result.Value:= _Value;
      Result.IsLeaf:= _IsLeaf;
      slTreeData.AddObject( _Key, Result);
+end;
+
+procedure TfFileVirtualTree.bLoad_from_FileClick(Sender: TObject);
+begin
+     Load_from_File( eFileName.Text);
+end;
+
+procedure TfFileVirtualTree.bODClick(Sender: TObject);
+begin
+     od.FileName:= eFileName.Text;
+     if od.Execute
+     then
+         eFileName.Text:= od.FileName;
+end;
+
+procedure TfFileVirtualTree.Load_from_File( _FileName: String);
+   procedure slFiles_from_ini_file;
+   var
+      ini: TINIFile;
+   begin
+        ini:= TINIFile.Create( _FileName);
+        try
+           ini.ReadSectionRaw( 'Files', slFiles);
+        finally
+               slFiles.Sort;
+               FreeAndNil( ini);
+               end;
+   end;
+   procedure tv_from_slFiles;
+   var
+      i: Integer;
+      Key, Value: String;
+   begin
+        pb.Min:= -1;
+        pb.Max:= slFiles.Count-1;
+        for i:= 0 to slFiles.Count-1
+        do
+          begin
+          Key  := slFiles.Names         [ i];
+          Value:= slFiles.ValueFromIndex[ i];
+
+          vst_addnode_from_key_value( Key, Value);
+          pb.Position:= i;
+          end;
+        lCompute_Aggregates.Show;
+        Application.ProcessMessages;
+        Compute_Aggregates;
+        lCompute_Aggregates.Hide;
+   end;
+begin
+     slFiles:= TStringList.Create;
+     slFiles_from_ini_file;
+     slNodes:= TStringList.Create;
+     slTreeData:= TStringList.Create;
+     tv_from_slFiles;
 end;
 
 function TfFileVirtualTree.NewNode_from_TreeData( _Parent: PVirtualNode; _td: TTreeData): PVirtualNode;
@@ -280,7 +319,7 @@ var
             else
                 Node:= Add_Node( Parent, s);
 
-            slNodes.AddObject( sCle, TObject(Parent));
+            slNodes.AddObject( sCle, TObject(Node));
             end
         else
             Node:= PVirtualNode( slNodes.Objects[i]);
@@ -412,7 +451,9 @@ function TfFileVirtualTree.Get_Checked: String;
 var
    vn: PVirtualNode;
    td: TTreeData;
+   Total_Time : Double;
 begin
+     Total_Time:=0;
      Result:= '';
      vn:= vst.GetFirstChecked;
      while nil <> vn
@@ -421,9 +462,14 @@ begin
        td:= TreeData_from_Node( vn);
        if td.IsLeaf
        then
+           Begin
            Formate_Liste( Result, #13#10, td.Key+' '+td.Value);
+              Total_Time:=Total_Time+td.dValue
+           end;
        vn:= vst.GetNextChecked( vn);
        end;
+    Formate_Liste( Result, #13#10#13#10, 'Total Time Needed: '+FormatDateTime( 'h:n:ss', Total_Time));
+    Result:='Total Time Needed: '+FormatDateTime( 'h:n:ss', Total_Time)+#13#10#13#10+Result;
 end;
 
 procedure TfFileVirtualTree.bGetSelectionClick(Sender: TObject);
